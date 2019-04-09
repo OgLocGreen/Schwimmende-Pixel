@@ -7,7 +7,7 @@ var serverIdle = false; //flag, shows if server is idle. Is set when server send
 
 
 var color= [0,0,0,0,0,0,0,0,0,0,0];
-var ip1 = "ws://192.168.1.169/";
+var ip1 = "ws://192.168.1.169/ws";
 var ip ={1:"192.168.1.169",
     2:"99.168.1.169",
     3:"99.168.1.169",
@@ -100,8 +100,9 @@ function mainWebSocket(wsUri) {
     websocket = new WebSocket(wsUri);   //creating new WebSocket-Object, constructor needs IP-Adress (here...)
     websocket.onopen = function () { onOpen(); }; //function called by websocket.onopen-method (when websocket-connection is started)
     websocket.onclose = function () { onClose(); };   //function called by websocket.onclose-method (when websocket-connection is closed)
-    websocket.onmessage = function (evt) { onMessage(evt); };   //function called by websocket.onmessage-method (when a message is recieved)
-    websocket.onerror = function (evt) { onError(evt); };   //function called by websocket.onerror-method (when an error occured)
+    //websocket.onmessage = function (evt) { onMessage(evt); };   //function called by websocket.onmessage-method (when a message is recieved)
+    //websocket.onerror = function (evt) { onError(evt); };   //function called by websocket.onerror-method (when an error occured)
+    window.alert("Connected");
 }
 
 //websocket-action
@@ -109,7 +110,7 @@ function onOpen() {
     document.getElementById("disconnect").disabled = false;  //enable "Disconnect"-button
     document.getElementById("connect").disabled = true; //disable IP-textfield
     connectedToServer = true;
-    doSend("D:" + Date().substr(16,8),id);    //Senden der Uhrzeit
+    //doSend("D:" + Date().substr(16,8));    //Senden der Uhrzeit
 }
 
 //websocket-action
@@ -129,7 +130,6 @@ function disconnect() {
 
 //write message to screen and send it via websocket (instantly)
 function doSend(message) {
-    writeToScreen("SENT: " + message);
     websocket.send(message);
 }
 

@@ -18,6 +18,9 @@
 #define OLED_RESET    false // Reset pin # (or -1 if sharing Arduino reset pin)
 //Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+void DisplayRefresh();
+
+
 
 //Defines for RGB-Ring
 #define PIN 18
@@ -25,7 +28,9 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(LEDS, PIN, NEO_GBR + NEO_KHZ800);
 void colorWipe(uint32_t c, uint8_t wait);
 void rainbow(uint8_t wait);
-
+bool website = 0;
+bool akku = 0;
+bool ip = 0;
 /// Defindes for Webservice
 const char* ssid = "da34-2,4";
 const char* password = "arschlochkind4";
@@ -89,6 +94,7 @@ void setup(){
   // Verbinden von WIFI
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {   // Solange versuchen zu verbinden bis erfolg
+    /*
     int i = 0;
     // Some example procedures showing how to display to the pixels:
     if(i%2==0)
@@ -101,23 +107,14 @@ void setup(){
     {
       colorWipe(strip.Color(0, 255, 0), 100); // Green
     }
-    delay(10000);
+    */
+    delay(100);
     Serial.println("Connecting to WiFi..");
   }
 
   Serial.println(WiFi.localIP());   //Anzeigen von Ip über Serial
   display.clearDisplay();             //Anzeigen von IP und Akku auf OLed Display
-  display.setTextSize(1);             
-  display.setTextColor(WHITE);        
-  display.setCursor(0,0);             
-  display.println(F("IP:"));
-  display.println(WiFi.localIP());
-  display.setTextSize(1);             
-  display.setTextColor(WHITE);        
-  display.setCursor(0,20);             
-  display.println(F("Akku:"));
-  display.print("AKKU");
-  display.display();
+  DisplayRefresh();
   delay(2000);
 
   
@@ -140,9 +137,12 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
   if(type == WS_EVT_CONNECT){
     Serial.printf("ws[%s][%u] connect\n", server->url(), client->id());
     client->printf("Hello Client %u :)", client->id());
-    client->ping();
+    website = 1;
+    DisplayRefresh();
   } else if(type == WS_EVT_DISCONNECT){
     Serial.printf("ws[%s][%u] disconnect: %u\n", server->url(), client->id());
+    website = 0;
+    DisplayRefresh();
   } else if(type == WS_EVT_ERROR){
     Serial.printf("ws[%s][%u] error(%u): %s\n", server->url(), client->id(), *((uint16_t*)arg), (char*)data);
   } else if(type == WS_EVT_PONG){
@@ -153,7 +153,6 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
     if(info->final && info->index == 0 && info->len == len){
       //the whole message is in a single frame and we got all of it's data
       Serial.printf("ws[%s][%u] %s-message[%llu]: ", server->url(), client->id(), (info->opcode == WS_TEXT)?"text":"binary", info->len);
-
       if(info->opcode == WS_TEXT){
         for(size_t i=0; i < info->len; i++) {
           msg += (char) data[i];
@@ -206,6 +205,39 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
         }
       }
     }
+  int farbe = atoi(msg.c_str());
+   switch (farbe)   {
+    case 0:
+      for(int i=0; i<strip.numPixels()+1; i++) {
+        strip.setPixelColor(i, strip.Color(125, 125, 125));
+        strip.show();
+        delay(1);
+        }
+      break;
+    case 1:
+      for(int i=0; i<strip.numPixels()+1; i++) {
+        strip.setPixelColor(i, strip.Color(0, 0, 125));
+        strip.show();
+        delay(1);
+        }
+      break;
+    case 2:
+      for(int i=0; i<strip.numPixels()+1; i++) {
+        strip.setPixelColor(i, strip.Color(0, 125, 0));
+        strip.show();
+        delay(1);
+        }
+      break;
+    case 3:
+      for(int i=0; i<strip.numPixels()+1; i++) {
+        strip.setPixelColor(i, strip.Color(125, 0, 0));
+        strip.show();
+        delay(1);
+        }
+      break;
+    default:
+       break;
+   }
   }
 }
 
@@ -247,4 +279,32 @@ void rainbow(uint8_t wait) {
     strip.show();
     delay(wait);
   }
+}
+
+void DisplayRefresh()
+{
+  String sakku;
+  String swebsite;
+  if(akku==1 ){ sakku = "connected";}
+  else{ sakku = "Not connected";}
+  if(website == 1 ){ swebsite = "connected";}
+  else{ swebsite = "Not connected";}
+  display.clearDisplay();             //Anzeigen von IP und Akku auf OLed Display
+  display.setTextSize(1);             
+  display.setTextColor(WHITE);        
+  display.setCursor(0,0);             
+  display.println(F("IP:"));
+  display.println(WiFi.localIP());
+  display.setTextSize(1);             
+  display.setTextColor(WHITE);        
+  display.setCursor(0,20);             
+  display.println(F("Akku:"));
+  display.print(sakku);
+  display.setTextSize(1);             
+  display.setTextColor(WHITE);        
+  display.setCursor(0,40);             
+  display.println(F("Website:"));
+  display.print(swebsite);
+  display.display();
+  delay(2000);
 }
