@@ -1,0 +1,25 @@
+.button{
+    width: 100px;
+    height: 100px;
+    background-color: black;
+    color: white;
+    text-align:center;
+    line-height:100px;
+    border-radius: 100px;
+}
+/*
+.button:hover {
+  background-color: black;
+  cursor: pointer;
+  cursor: hand;
+}
+*/
+.game-board {
+    display: grid;
+    grid-template-rows: 200px 200px 200px;
+    grid-template-columns: 200px 200px 200px;
+}
+body {
+    display: flex;
+    justify-content: center;
+    }
