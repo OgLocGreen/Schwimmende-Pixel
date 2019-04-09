@@ -24,12 +24,18 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #define LOGO_WIDTH    128
 
 /// Defindes for Webservice
+const char* ssid = "da34-2,4";
+const char* password = "arschlochkind4";
+
+/*
+//Hochschul Wlan
 const char* ssid = "FRITZ!Box 7590 VO";
 const char* password = "91272756878874074534";
+*/
 
 AsyncWebServer server(80);
-//AsyncWebSocket ws("/ws");
-//AsyncEventSource events("/events");
+AsyncWebSocket ws("/ws");
+AsyncEventSource events("/events");
 
 void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
 
@@ -42,13 +48,22 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(LEDS, PIN, NEO_GBR + NEO_KHZ800);
 void setup(){
   Serial.begin(9600);
 
-  //hello
-  display.clearDisplay();             //Anzeigen von IP und Akku auf OLed Display
+  /// Verbinden von Oled Display
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;); // Don't proceed, loop forever
+  }
+
+  //Anzeigen von IP und Akku auf OLed Display
+  display.clearDisplay();
   display.setTextSize(1);             
   display.setTextColor(WHITE);        
   display.setCursor(0,0);             
-  display.println(F("Hello"));
+  display.println(F("Hello, starting ESP32"));
+  display.display();
 
+
+  //Beginn LED-Ring
   strip.begin();
   strip.setBrightness(50);
   for(int i=0; i<strip.numPixels()+1; i++) {
@@ -57,20 +72,34 @@ void setup(){
     delay(1);
     }
 
+  int n = WiFi.scanNetworks();
+  Serial.println("scan done");
+  if (n == 0) {
+    Serial.println("no networks found");
+  }
+  else {
+    Serial.print(n);
+    Serial.println(" networks found");
+    for (int i = 0; i < n; ++i) {
+      // Print SSID and RSSI for each network found
+      Serial.print(i + 1);
+      Serial.print(": ");
+      Serial.print(WiFi.SSID(i));
+      Serial.print(" (");
+      Serial.print(WiFi.RSSI(i));
+      Serial.print(")");
+      Serial.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN)?" ":"*");
+      delay(10);
+      }
+  }
+  // Verbinden von WIFI
   WiFi.begin(ssid, password);
- /// Verbinden von WIFI
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED) {   // Solange versuchen zu verbinden bis erfolg
     delay(1000);
     Serial.println("Connecting to WiFi..");
   }
-  /// Verbinden von Oled Display
-  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
-    Serial.println(F("SSD1306 allocation failed"));
-    for(;;); // Don't proceed, loop forever
-  }
 
   Serial.println(WiFi.localIP());   //Anzeigen von Ip über Serial
-
   display.clearDisplay();             //Anzeigen von IP und Akku auf OLed Display
   display.setTextSize(1);             
   display.setTextColor(WHITE);        
@@ -86,62 +115,18 @@ void setup(){
   delay(2000);
 
   
-  //Send OTA events to the browser
-  /*
-  ArduinoOTA.onStart([]() { events.send("Update Start", "ota"); });
-  ArduinoOTA.onEnd([]() { events.send("Update End", "ota"); });
-  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-    char p[32];
-    sprintf(p, "Progress: %u%%\n", (progress/(total/100)));
-    events.send(p, "ota");
+  server.begin();
+  ws.onEvent(onWsEvent);
+  server.addHandler(&ws);
+
+  events.onConnect([](AsyncEventSourceClient *client){
+   client->send("hello!",NULL,millis(),1000);
   });
-  ArduinoOTA.onError([](ota_error_t error) {
-    if(error == OTA_AUTH_ERROR) events.send("Auth Failed", "ota");
-    else if(error == OTA_BEGIN_ERROR) events.send("Begin Failed", "ota");
-    else if(error == OTA_CONNECT_ERROR) events.send("Connect Failed", "ota");
-    else if(error == OTA_RECEIVE_ERROR) events.send("Recieve Failed", "ota");
-    else if(error == OTA_END_ERROR) events.send("End Failed", "ota");
-  });
-  ArduinoOTA.setHostname(ssid);
-  ArduinoOTA.begin();
-  */
-
-  //ws.onEvent(onWsEvent);
-  //server.addHandler(&ws);
-
-  //events.onConnect([](AsyncEventSourceClient *client){
-   // client->send("hello!",NULL,millis(),1000);
-  //});
-
-  //server.addHandler(&events);
-
-  /*
-  server.onNotFound([](AsyncWebServerRequest *request){
-    Serial.printf("NOT_FOUND: ");
-    if(request->method() == HTTP_GET)
-      Serial.printf("GET");
-    else if(request->method() == HTTP_POST)
-      Serial.printf("POST");
-    else if(request->method() == HTTP_DELETE)
-      Serial.printf("DELETE");
-    else if(request->method() == HTTP_PUT)
-      Serial.printf("PUT");
-    else if(request->method() == HTTP_PATCH)
-      Serial.printf("PATCH");
-    else if(request->method() == HTTP_HEAD)
-      Serial.printf("HEAD");
-    else if(request->method() == HTTP_OPTIONS)
-      Serial.printf("OPTIONS");
-    else
-      Serial.printf("UNKNOWN");
-    Serial.printf(" http://%s%s\n", request->host().c_str(), request->url().c_str());
-  */
-
-
+  server.addHandler(&events);
 }
- 
+   
 void loop(){
-  //ArduinoOTA.handle();
+
 }
 
 
