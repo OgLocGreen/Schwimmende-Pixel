@@ -14,40 +14,37 @@
 /// Defines for OLED Display
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
-
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 #define OLED_RESET    false // Reset pin # (or -1 if sharing Arduino reset pin)
 //Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-#define NUMFLAKES     10 // Number of snowflakes in the animation example
-#define LOGO_HEIGHT   64
-#define LOGO_WIDTH    128
+
+//Defines for RGB-Ring
+#define PIN 18
+#define LEDS 16
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(LEDS, PIN, NEO_GBR + NEO_KHZ800);
+void colorWipe(uint32_t c, uint8_t wait);
+void rainbow(uint8_t wait);
 
 /// Defindes for Webservice
 const char* ssid = "da34-2,4";
 const char* password = "arschlochkind4";
-
 /*
 //Hochschul Wlan
 const char* ssid = "FRITZ!Box 7590 VO";
 const char* password = "91272756878874074534";
 */
-
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 //AsyncEventSource events("/events");
 
 void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
 
-//Defines for RGB-Ring
-#define PIN 15
-#define LEDS 16
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(LEDS, PIN, NEO_GBR + NEO_KHZ800);
 
 void setup(){
   Serial.begin(9600);
-
+  Serial.println("Hello my Friend, starting ESP32 ");
   /// Verbinden von Oled Display
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
     Serial.println(F("SSD1306 allocation failed"));
@@ -59,18 +56,14 @@ void setup(){
   display.setTextSize(1);             
   display.setTextColor(WHITE);        
   display.setCursor(0,0);             
-  display.println(F("Hello, starting ESP32"));
+  display.println(F("Hello my Friend, starting ESP32"));
   display.display();
 
 
   //Beginn LED-Ring
   strip.begin();
   strip.setBrightness(50);
-  for(int i=0; i<strip.numPixels()+1; i++) {
-    strip.setPixelColor(i, strip.Color(125, 125, 125));
-    strip.show();
-    delay(1);
-    }
+  rainbow(20);
 
   int n = WiFi.scanNetworks();
   Serial.println("scan done");
@@ -92,10 +85,23 @@ void setup(){
       delay(10);
       }
   }
+
   // Verbinden von WIFI
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {   // Solange versuchen zu verbinden bis erfolg
-    delay(1000);
+    int i = 0;
+    // Some example procedures showing how to display to the pixels:
+    if(i%2==0)
+    {
+      colorWipe(strip.Color(255, 0, 0), 100); // Red
+    }else if (i%2==1)
+    {
+      colorWipe(strip.Color(0, 0, 255), 100); // Blue
+    }else
+    {
+      colorWipe(strip.Color(0, 255, 0), 100); // Green
+    }
+    delay(10000);
     Serial.println("Connecting to WiFi..");
   }
 
@@ -218,4 +224,27 @@ uint32_t Wheel(byte WheelPos) {
   }
   WheelPos -= 170;
   return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+}
+
+
+// Some Funktions for the LED-Ring
+// Fill the dots one after the other with a color
+void colorWipe(uint32_t c, uint8_t wait) {
+  for(uint16_t i=0; i<strip.numPixels(); i++) {
+    strip.setPixelColor(i, c);
+    strip.show();
+    delay(wait);
+  }
+}
+
+void rainbow(uint8_t wait) {
+  uint16_t i, j;
+
+  for(j=0; j<256; j++) {
+    for(i=0; i<strip.numPixels(); i++) {
+      strip.setPixelColor(i, Wheel((i+j) & 255));
+    }
+    strip.show();
+    delay(wait);
+  }
 }
