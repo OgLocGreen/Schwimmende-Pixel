@@ -1,6 +1,6 @@
 # Schwimmende Pixel
 
-Schwimmende Pixel ist ein Projekt der Hochschule Karlsruhe. Jeder Pixel symobisiert einen ESP mit einem LED-Ring dieser kann per webseite angesteuert werden.
+Schwimmende Pixel ist ein Projekt der Hochschule Karlsruhe. Jeder Pixel symbolisiert einen ESP mit einem LED-Ring dieser kann per webseite angesteuert werden.
 
 
 ## Getting Started
