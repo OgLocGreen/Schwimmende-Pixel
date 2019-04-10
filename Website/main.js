@@ -1,14 +1,15 @@
+//Hier sind die Funktionen für die Webseite
+//Hier ist auch der Websocketteil implementiert
 
+var websocket= [0,0,0,0,0,0,0,0,0,0,0];  //websocket-"Object"
+//var outputDataStream = "";  //message, will be sent, if websocket-server is idle
+//var connectedToServer //flag, shows if client is connected to server (set by onOpen, reset by onClose)
+//var serverIdle = false; //flag, shows if server is idle. Is set when server sends "--serverIdle--"
 
-var websocket  //websocket-"Object"
-var outputDataStream = "";  //message, will be sent, if websocket-server is idle
-var connectedToServer //flag, shows if client is connected to server (set by onOpen, reset by onClose)
-var serverIdle = false; //flag, shows if server is idle. Is set when server sends "--serverIdle--"
-
-
-var color= [0,0,0,0,0,0,0,0,0,0,0];
-var ip1 = "ws://192.168.1.169/ws";
-var ip ={1:"192.168.1.169",
+var websocket = [0,0,0,0,0,0,0,0,0,0,0];  //websocket arry mit NULL inizialisiert
+var color= [0,0,0,0,0,0,0,0,0,0,0];       //Array für das Merken welche Farbe in welchem Button
+//var ip1 = "ws://192.168.1.169/ws";    //Wenn nur ein ESP
+var ip ={1:"ws://192.168.1.169/ws",
     2:"99.168.1.169",
     3:"99.168.1.169",
     4:"99.168.1.169",
@@ -24,28 +25,20 @@ var ip ={1:"192.168.1.169",
 function wechselfarbe(clicked_id) {
     color[clicked_id]++;
     if (color[clicked_id] > 3){
-        color[clicked_id] = 0;
+        color[clicked_id] = 1;
     }
     switch(color[clicked_id]){
-        case 0:
-            document.getElementById(clicked_id).style.backgroundColor = "gray";
-            //httpGetAsync(ip[clicked_id]+"/gray",callback);
-            websocket.send(color[clicked_id]);
-            break;
         case 1:
             document.getElementById(clicked_id).style.backgroundColor = "red";
-            //httpGetAsync(ip[clicked_id]+"/red",callback);
-            websocket.send(color[clicked_id]);
+            websocket[clicked_id].send(color[clicked_id]);
             break;
         case 2:
             document.getElementById(clicked_id).style.backgroundColor = "green";
-            //httpGetAsync(ip[clicked_id]+"/green",callback);
-            websocket.send(color[clicked_id]);
+            websocket[clicked_id].send(color[clicked_id]);
             break;
         case 3:
             document.getElementById(clicked_id).style.backgroundColor = "blue";
-            //httpGetAsync(ip[clicked_id]+"/blue",callback);
-            websocket.send(color[clicked_id]);
+            websocket[clicked_id].send(color[clicked_id]);
             break;
     }
 };
@@ -53,84 +46,57 @@ function wechselfarbe(clicked_id) {
 // Reset_Button
 function rest(){
     for (var i = 1; i < 10; i++){
-    document.getElementById(i).style.backgroundColor = "black";
-    color[i]= 0;
-    //httpGetAsync(ip[i]+"/gray",callback);
+    //document.getElementById(i).style.backgroundColor = "black";
+    //color[i]= 0;
     }
 }
-
-// Alte Webserver Function
-/*
-function httpGetAsync(theUrl, callback)
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() { 
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            callback(xmlHttp.responseText);
-    }
-    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
-    xmlHttp.send(null);
-}
-
-function callback(respond)
-{
-    if(respond==200){
-        break;
-    }
-    else{
-        break;
-    }
-}
-*/
-
 
 
 // Function to Connect to all ESP32
 function connect() {
-    mainWebSocket(ip1);
-    /*
     for (var i = 1; i < 9; i++){
         mainWebSocket(ip[i],i);
     }
-    */
 }
 
 
-function mainWebSocket(wsUri) {
-    websocket = new WebSocket(wsUri);   //creating new WebSocket-Object, constructor needs IP-Adress (here...)
-    websocket.onopen = function () { onOpen(); }; //function called by websocket.onopen-method (when websocket-connection is started)
-    websocket.onclose = function () { onClose(); };   //function called by websocket.onclose-method (when websocket-connection is closed)
-    //websocket.onmessage = function (evt) { onMessage(evt); };   //function called by websocket.onmessage-method (when a message is recieved)
-    //websocket.onerror = function (evt) { onError(evt); };   //function called by websocket.onerror-method (when an error occured)
-    window.alert("Connected");
+function mainWebSocket(wsUri,id) {
+    websocket[id] = new WebSocket(ip[id]);   //creating new WebSocket-Object, constructor needs IP-Adress (here...)
+    websocket[id].onopen = function () { onOpen(id); }; //function called by websocket.onopen-method (when websocket-connection is started)
+    websocket[id].onclose = function () { onClose(); };   //function called by websocket.onclose-method (when websocket-connection is closed)
+    //websocket[id].onmessage = function (evt) { onMessage(evt); };   //function called by websocket.onmessage-method (when a message is recieved)
+    //websocket[id].onerror = function (evt) { onError(evt); };   //function called by websocket.onerror-method (when an error occured)
 }
 
 //websocket-action
-function onOpen() {
-    document.getElementById("disconnect").disabled = false;  //enable "Disconnect"-button
-    document.getElementById("connect").disabled = true; //disable IP-textfield
-    connectedToServer = true;
+function onOpen(id) {
+    document.getElementById(id).style.backgroundColor = "gray";
+    websocket[id].send(0);
+    //document.getElementById("disconnect").disabled = false;  //enable "Disconnect"-button
+    //document.getElementById("connect").disabled = true; //disable IP-textfield
+    //connectedToServer = true;
     //doSend("D:" + Date().substr(16,8));    //Senden der Uhrzeit
 }
 
 //websocket-action
 function onClose() {
-    document.getElementById("connect").disabled = false;
-    document.getElementById("disconnect").disabled = true;
-    connectedToServer = false;
+    document.getElementById(id).style.backgroundColor = "black";
+    //document.getElementById("connect").disabled = false;
+    //document.getElementById("disconnect").disabled = true;
+    //connectedToServer = false;
 }
 
 //Disconnecting from WebSocket by pressing button
 function disconnect() {
-    websocket.close();
     for (var i = 1; i < length.ip; i++){
+        websocket[i].close();
         document.getElementById(i).style.backgroundColor = "black";
-        color[i]= 0;
+    }
 }
 
 //write message to screen and send it via websocket (instantly)
-function doSend(message) {
-    websocket.send(message);
+function doSend(message,id) {
+    websocket[id].send(message);
 }
 
 
@@ -190,4 +156,4 @@ function doSend_buffered(message){
             serverIdle = false; //reset serverIdle-flag
         }
     }
-}}
+}

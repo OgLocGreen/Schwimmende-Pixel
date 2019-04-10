@@ -28,9 +28,11 @@ void DisplayRefresh();
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(LEDS, PIN, NEO_GBR + NEO_KHZ800);
 void colorWipe(uint32_t c, uint8_t wait);
 void rainbow(uint8_t wait);
+void noled();
 bool website = 0;
 bool akku = 0;
 bool ip = 0;
+
 /// Defindes for Webservice
 const char* ssid = "da34-2,4";
 const char* password = "arschlochkind4";
@@ -143,6 +145,7 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
     Serial.printf("ws[%s][%u] disconnect: %u\n", server->url(), client->id());
     website = 0;
     DisplayRefresh();
+    noled();
   } else if(type == WS_EVT_ERROR){
     Serial.printf("ws[%s][%u] error(%u): %s\n", server->url(), client->id(), *((uint16_t*)arg), (char*)data);
   } else if(type == WS_EVT_PONG){
@@ -235,6 +238,13 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
         delay(1);
         }
       break;
+    case 4:
+      for(int i=0; i<strip.numPixels()+1; i++) {
+        strip.setPixelColor(i, strip.Color(0, 0, 0));
+        strip.show();
+        delay(1);
+        }
+      break;
     default:
        break;
    }
@@ -279,6 +289,14 @@ void rainbow(uint8_t wait) {
     strip.show();
     delay(wait);
   }
+}
+
+void noled() {
+  for(int i=0; i<strip.numPixels()+1; i++) {
+    strip.setPixelColor(i, strip.Color(0, 0, 0));
+    strip.show();
+    delay(1);
+    }
 }
 
 void DisplayRefresh()
