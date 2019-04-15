@@ -35,7 +35,7 @@ bool ip = 0;
 
 /// Defindes for Webservice
 const char* ssid = "da34-2,4";
-const char* password = "arschlochkind4";
+const char* password = "";
 /*
 //Hochschul Wlan
 const char* ssid = "FRITZ!Box 7590 VO";
