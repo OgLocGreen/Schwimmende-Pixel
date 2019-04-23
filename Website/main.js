@@ -9,7 +9,7 @@ var websocket= [0,0,0,0,0,0,0,0,0,0,0];  //websocket-"Object"
 var websocket = [0,0,0,0,0,0,0,0,0,0,0];  //websocket arry mit NULL inizialisiert
 var color= [0,0,0,0,0,0,0,0,0,0,0];       //Array für das Merken welche Farbe in welchem Button
 //var ip1 = "ws://192.168.1.169/ws";    //Wenn nur ein ESP
-var ip ={1:"ws://192.168.1.169/ws",
+var ip ={1:"ws://192.168.1.250/ws",
     2:"99.168.1.169",
     3:"99.168.1.169",
     4:"99.168.1.169",
