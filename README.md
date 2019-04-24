@@ -28,4 +28,4 @@ Das Projekt könnte durch mehrere ESPs noch erweitert werden. Damit sollte es m�
 Zusätzlich könnte man die LED-Ringe zu verschiedenen Muster zusammenschließen und sie auf unterschiedlichste Informationen zb. Musik reagiern lassen.
 
 ### Fazit
-Insgesamt was es ein sehr interesanntes Projekt durch die vielen verschiedenen Komponenten.
+Insgesamt war es ein sehr interesantes Projekt gerade durch die vielen verschiedenen mechatronischen Komponenten. 
