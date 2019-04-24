@@ -50,8 +50,10 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
 
 
 void setup(){
+  /*
   Serial.begin(9600);
   Serial.println("Hello my Friend, starting ESP32 ");
+  */
   /// Verbinden von Oled Display
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
     Serial.println(F("SSD1306 allocation failed"));
@@ -72,6 +74,7 @@ void setup(){
   strip.setBrightness(50);
   rainbow(20);
 
+  /*
   int n = WiFi.scanNetworks();
   Serial.println("scan done");
   if (n == 0) {
@@ -92,7 +95,7 @@ void setup(){
       delay(10);
       }
   }
-
+*/
   // Verbinden von WIFI
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {   // Solange versuchen zu verbinden bis erfolg
@@ -111,15 +114,10 @@ void setup(){
     }
     */
     delay(100);
-    Serial.println("Connecting to WiFi..");
+    //Serial.println("Connecting to WiFi..");
   }
-  for(int i=0; i<strip.numPixels()+1; i++) {
-        strip.setPixelColor(i, strip.Color(0, 0, 0));
-        strip.show();
-        delay(1);
-        }
 
-  Serial.println(WiFi.localIP());   //Anzeigen von Ip über Serial
+  //Serial.println(WiFi.localIP());   //Anzeigen von Ip über Serial
   display.clearDisplay();             //Anzeigen von IP und Akku auf OLed Display
   DisplayRefresh();
   delay(2000);

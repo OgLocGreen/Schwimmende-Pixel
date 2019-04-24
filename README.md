@@ -24,7 +24,8 @@ Einfach die Github Repositories clonen bzw. herunterladen. Dann mit [VS Code](ht
 * [Adafruit_NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel) Lib für RGB-Ring
 * [Adafruit_SSD1306](https://github.com/adafruit/Adafruit_SSD1306) Lib für Oled
 * [Adafruit_GFX](https://github.com/adafruit/Adafruit-GFX-Library) Lib für Grafik
-diese müssen natürlich auch heruntergeladen werden entweder über [Platformio install](https://docs.platformio.org/en/latest/librarymanager/) or in [Arduino](https://www.arduino.cc/en/guide/libraries).
+
+diese müssen natürlich auch heruntergeladen werden entweder über [Platformio](https://docs.platformio.org/en/latest/librarymanager/) or in [Arduino](https://www.arduino.cc/en/guide/libraries).
 
 ### Bedienung
 Über die Webseite kann man einen Rechner mit den ESPs verbinden, wichtig hierbei ist es das sich der ESP32 und die Server auf welchem die Webseite läuft, im gleichen Netzwerk befinden. Wird die Verbindung zwischen Webseite und ESP32 hergestellt, werden die LEDs Weiß und symbolisieren somit den Status verbunden.
