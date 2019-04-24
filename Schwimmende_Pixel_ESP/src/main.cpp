@@ -34,13 +34,13 @@ bool akku = 0;
 bool ip = 0;
 
 /// Defindes for Webservice
-const char* ssid = "da34-2,4";
-const char* password = "";
-/*
+//const char* ssid = "da34-2,4";
+//const char* password = "";
+
 //Hochschul Wlan
 const char* ssid = "FRITZ!Box 7590 VO";
 const char* password = "91272756878874074534";
-*/
+
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 //AsyncEventSource events("/events");
@@ -113,6 +113,11 @@ void setup(){
     delay(100);
     Serial.println("Connecting to WiFi..");
   }
+  for(int i=0; i<strip.numPixels()+1; i++) {
+        strip.setPixelColor(i, strip.Color(0, 0, 0));
+        strip.show();
+        delay(1);
+        }
 
   Serial.println(WiFi.localIP());   //Anzeigen von Ip über Serial
   display.clearDisplay();             //Anzeigen von IP und Akku auf OLed Display
