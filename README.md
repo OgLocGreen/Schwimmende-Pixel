@@ -20,10 +20,10 @@ Dazu gehört:
 
 ### Installing
 Einfach die Github Repositories clonen bzw. herunterladen. Dann mit [VS Code](https://code.visualstudio.com/) und [Platformi](https://github.com/platformio/platformio-vscode-ide) oder mit der Arudino IDE das Projekt öffenen. Es wurden folgende dritt Biblotheken verwendet:
-* [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) Lib für Websocket
-* [Adafruit_NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel) Lib für RGB-Ring
-* [Adafruit_SSD1306](https://github.com/adafruit/Adafruit_SSD1306) Lib für Oled
-* [Adafruit_GFX](https://github.com/adafruit/Adafruit-GFX-Library) Lib für Grafik
+* [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) Lib für Websocket (commit 95dedf7)
+* [Adafruit_NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel) Lib für RGB-Ring (commit  8c8e38c)
+* [Adafruit_SSD1306](https://github.com/adafruit/Adafruit_SSD1306) Lib für Oled (commit 5c62208)
+* [Adafruit_GFX](https://github.com/adafruit/Adafruit-GFX-Library) Lib für Grafik (commit e83e3ce)
 
 diese müssen natürlich auch heruntergeladen werden entweder über [Platformio](https://docs.platformio.org/en/latest/librarymanager/) or in [Arduino](https://www.arduino.cc/en/guide/libraries).
 
