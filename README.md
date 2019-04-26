@@ -17,7 +17,7 @@ diese sind in Schwimmende_Pixel_EPS -> src -> main.cpp zufinden
 * css styles
 
 ### Installing
-Einfach die Github Repositories clonen bzw. herunterladen. Dann mit [VS Code](https://code.visualstudio.com/) und [Platformi](https://github.com/platformio/platformio-vscode-ide) oder mit der Arudino IDE das Projekt öffenen. Es wurden folgende dritt Biblotheken verwendet:
+Einfach die Github Repositories clonen bzw. herunterladen. Dann mit [VS Code](https://code.visualstudio.com/) und [Platformio](https://github.com/platformio/platformio-vscode-ide) oder mit der Arduino IDE das Projekt öffenen. Es wurden folgende dritt Biblotheken verwendet:
 * [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) Lib für Websocket (commit 95dedf7 or version 1.2.0)
 * [Adafruit_NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel) Lib für RGB-Ring (commit  8c8e38c or version 1.2.0)
 * [Adafruit_SSD1306](https://github.com/adafruit/Adafruit_SSD1306) Lib für Oled (commit 5c62208 or version 1.2.9)
