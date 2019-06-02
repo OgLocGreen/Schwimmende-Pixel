@@ -25,7 +25,7 @@ void DisplayRefresh();
 //Defines for RGB-Ring
 #define PIN 18
 #define LEDS 16
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(LEDS, PIN, NEO_GBR + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(LEDS, PIN, NEO_RGBW + NEO_KHZ800); //Je nach Led Ring vlt andere Parameter
 void colorWipe(uint32_t c, uint8_t wait);
 void rainbow(uint8_t wait);
 void noled();
